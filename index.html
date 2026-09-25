@@ -168,15 +168,27 @@
   }
 
   /* Botón de Enviar centrado y amplio */
-  button[type="submit"], 
-  .btn-submit {
-    width: 100% !important;
-    margin-top: 15px;
-    padding: 14px;
-  }
-}
+      button[type="submit"], 
+      .btn-submit {
+        width: 100% !important;
+        margin-top: 15px;
+        padding: 14px;
+      }
+    }
 
-    
+    .btn-excel {
+      background-color: #16a34a; /* Verde Excel */
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .btn-excel:hover {
+      background-color: #15803d;
+    }
   </style>
 </head>
 <body>
@@ -243,10 +255,10 @@
       <h2>Panel de Administración</h2>
       <div>
         <button onclick="cargarTabla()">Actualizar Tabla</button>
+        <button type="button" class="btn-excel" onclick="descargarExcel()">Descargar</button>
         <button onclick="cerrarSesion()" style="background-color: #6b7280;">Cerrar Sesión</button>
       </div>
     </div>
-    
     <div class="table-container">
       <table>
         <thead>
