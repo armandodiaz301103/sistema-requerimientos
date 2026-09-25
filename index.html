@@ -25,7 +25,7 @@
       background-color: #f3f4f6;
     }
     .card {
-      background-color: #0e492e;
+      background-color: #0c3e28dc;
       color: white;
       padding: 60px;
       border-radius: 8px;
@@ -122,6 +122,60 @@
     td {
       white-space: pre-line;
     }
+
+    /* Configuración para que en celulares todo se acomode en 1 sola columna */
+@media (max-width: 768px) {
+  /* Contenedor principal sin márgenes apretados */
+  .card {
+    padding: 15px !important;
+    width: 95% !important;
+  }
+
+  /* Encabezado y botón de Cerrar Sesión ordenados */
+  .header-container, 
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: static !important; /* Quita posiciones absolutas si las hay */
+  }
+
+  /* Fuerza a que el formulario use una sola columna vertical */
+  form, 
+  .form-grid, 
+  .grid-container {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px;
+  }
+
+  /* Todos los campos ocupan el 100% del ancho accesible */
+  input[type="text"],
+  input[type="number"],
+  select,
+  textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    font-size: 16px !important; /* Previene el zoom en móviles */
+  }
+
+  /* El área de texto del concepto adaptada */
+  textarea {
+    min-height: 120px;
+  }
+
+  /* Botón de Enviar centrado y amplio */
+  button[type="submit"], 
+  .btn-submit {
+    width: 100% !important;
+    margin-top: 15px;
+    padding: 14px;
+  }
+}
+
     
   </style>
 </head>
