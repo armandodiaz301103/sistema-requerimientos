@@ -461,30 +461,69 @@
     }
 
     //Funcion descargar
-    function descargarExcel() {
-    const tabla = document.querySelector("table");
-    if (!tabla) {
-      alert("No hay datos disponibles para exportar.");
-      return;
-    }
-    const tablaClon = tabla.cloneNode(true);
-    const filas = tablaClon.querySelectorAll("tr");
-    filas.forEach(fila => {
-      if (fila.children.length > 0) {
-        fila.removeChild(fila.lastElementChild);
+    function descargarExcelFormateado() {
+      const tabla = document.querySelector("table");
+      if (!tabla) {
+        alert("No hay datos disponibles para exportar.");
+        return;
       }
-    });
-    const hoja = XLSX.utils.table_to_sheet(tablaClon);
-    const libro = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(libro, hoja, "Requerimientos");
+      const tablaClon = tabla.cloneNode(true);
+      const filas = tablaClon.querySelectorAll("tr");
+      filas.forEach(fila => {
+        if (fila.children.length > 0) {
+          fila.removeChild(fila.lastElementChild);
+        }
+      });
+      const hoja = XLSX.utils.table_to_sheet(tablaClon);
 
-    const fecha = new Date().toISOString().split('T')[0];
-    const nombreArchivo = `Reporte_Requerimientos_${fecha}.xlsx`;
+      hoja['!cols'] = [
+        { wch: 10 },
+        { wch: 22 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 45 } 
+      ];
 
-    //Descargar el archivo Excel
-    XLSX.writeFile(libro, nombreArchivo);
-  }
+      const estiloBorde = {
+        top: { style: "thin", color: { rgb: "D1D5DB" } },
+        bottom: { style: "thin", color: { rgb: "D1D5DB" } },
+        left: { style: "thin", color: { rgb: "D1D5DB" } },
+        right: { style: "thin", color: { rgb: "D1D5DB" } }
+      };
 
+      const rango = XLSX.utils.decode_range(hoja['!ref']);
+      
+      for (let R = rango.s.r; R <= rango.e.r; ++R) {
+        for (let C = rango.s.c; C <= rango.e.c; ++C) {
+          const direccionCelda = XLSX.utils.encode_cell({ r: R, c: C });
+          if (!hoja[direccionCelda]) continue;
+
+          const esEncabezado = (R === 0);
+
+          hoja[direccionCelda].s = {
+            border: estiloBorde,
+            alignment: {
+              wrapText: true, 
+              vertical: "top",  
+              horizontal: esEncabezado ? "center" : "left"
+            },
+            font: {
+              name: "Arial",
+              sz: 10,
+              bold: esEncabezado
+            },
+            fill: esEncabezado ? { fgColor: { rgb: "F3F4F6" } } : undefined // Gris claro en encabezados
+          };
+        }
+      }
+      const libro = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(libro, hoja, "Requerimientos");
+      const fecha = new Date().toISOString().split('T')[0];
+      XLSX.writeFile(libro, `Reporte_Requerimientos_${fecha}.xlsx`);
+    }
   </script>
-</body>
+</body
 </html>
