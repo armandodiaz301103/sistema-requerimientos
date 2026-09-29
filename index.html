@@ -477,15 +477,17 @@
       const hoja = XLSX.utils.table_to_sheet(tablaClon);
 
       hoja['!cols'] = [
-        { wch: 10 },
-        { wch: 22 },
-        { wch: 18 },
-        { wch: 18 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 15 },
-        { wch: 75 } 
-      ];
+      { wch: 10 }, 
+      { wch: 20 }, 
+      { wch: 14 }, 
+      { wch: 18 }, 
+      { wch: 10 }, 
+      { wch: 18 }, 
+      { wch: 12 },
+      { wch: 18 }, 
+      { wch: 14 },
+      { wch: 70 } 
+    ];
 
       const estiloBorde = {
         top: { style: "thin", color: { rgb: "D1D5DB" } },
@@ -511,11 +513,11 @@
               horizontal: esEncabezado ? "center" : "left"
             },
             font: {
-              name: "Arial",
+              name: "Calibri",
               sz: 10,
               bold: esEncabezado
             },
-            fill: esEncabezado ? { fgColor: { rgb: "F3F4F6" } } : undefined // Gris claro en encabezados
+            fill: esEncabezado ? { fgColor: { rgb: "E5E7EB" } } : undefined // Gris claro en encabezados
           };
         }
       }
