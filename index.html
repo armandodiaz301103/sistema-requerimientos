@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sistema de Requerimientos</title>
-  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -16,12 +16,12 @@
       justify-content: center;
       
       background-image: url('https://framework-gb.cdn.gob.mx/landing/img/states/pleca_gobierno.png');
-      background-size: cover;        /* Hace que la imagen cubra toda la pantalla */
-      background-position: center;   /* Centra la imagen */
-      background-repeat: no-repeat;  /* Evita que se repita en mosaico */
-      background-attachment: fixed;  /* Mantiene el fondo fijo al hacer scroll */
+      background-size: cover;        
+      background-position: center;   
+      background-repeat: no-repeat;  
+      background-attachment: fixed;  
   
-      /* Fallback de color si la imagen tarda en cargar */
+     
       background-color: #f3f4f6;
     }
     .card {
@@ -84,7 +84,7 @@
     }
     button:hover { background-color: #f6b83bc9; }
 
-    /* MARCO 4: TABLA ADMIN */
+    /* MARCO 4: TABLA DE ADMIN */
     .table-container {
       background-color: white;
       color: #333;
@@ -123,51 +123,47 @@
       white-space: pre-line;
     }
 
-    /* Configuración para que en celulares todo se acomode en 1 sola columna */
-@media (max-width: 768px) {
-  /* Contenedor principal sin márgenes apretados */
-  .card {
-    padding: 15px !important;
-    width: 95% !important;
-  }
+    /* Configuración para que en celulares*/
+    @media (max-width: 768px) {
+    .card {
+      padding: 15px !important;
+      width: 95% !important;
+    }
 
-  /* Encabezado y botón de Cerrar Sesión ordenados */
-  .header-container, 
-  .user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    position: static !important; /* Quita posiciones absolutas si las hay */
-  }
+    .header-container, 
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: static !important;
+    }
 
-  /* Fuerza a que el formulario use una sola columna vertical */
-  form, 
-  .form-grid, 
-  .grid-container {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 10px;
-  }
+    form, 
+    .form-grid, 
+    .grid-container {
+      display: flex !important;
+      flex-direction: column !important;
+      width: 100% !important;
+      gap: 10px;
+    }
 
-  /* Todos los campos ocupan el 100% del ancho accesible */
-  input[type="text"],
-  input[type="number"],
-  select,
-  textarea {
-    width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    font-size: 16px !important; /* Previene el zoom en móviles */
-  }
+    input[type="text"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      font-size: 16px !important; 
+    }
 
-  /* El área de texto del concepto adaptada */
-  textarea {
-    min-height: 85px;
-  }
+    
+    textarea {
+      min-height: 85px;
+    }
 
-  /* Botón de Enviar centrado y amplio */
+  
       button[type="submit"], 
       .btn-submit {
         width: 100% !important;
@@ -197,12 +193,11 @@
   <div id="marco1" class="card">
     <h2 style="text-align: center; margin-bottom: 10px;">Acceso al Sistema</h2>
     <p style="text-align: center; font-size: 14px; opacity: 0.9; margin-bottom: 20px;">
-      Ingresa tu nombre completo para enviar un requerimiento o 'admin' para administrar.
+      Ingresa tu nombre completo para enviar un requerimiento.
     </p>
     <form id="loginForm" class="login-container">
       <input type="text" id="user" placeholder="Nombre Completo" required style="width: 280px;">
       
-      <!-- Campo de contraseña (se muestra únicamente para admin) -->
       <div id="passwordContainer" class="hidden" style="width: 280px;">
         <input type="password" id="password" placeholder="Contraseña de Admin">
       </div>
@@ -284,20 +279,18 @@
   </div>
 
   <script>
-    // 1. CONFIGURACIÓN DE SUPABASE
     const SUPABASE_URL = "https://hvimndiwntssnlbotylk.supabase.co";
     const SUPABASE_KEY = "sb_publishable_nsnGCqO3CXUKr9uJKyzgpg_6_8Pnkgf";
     const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
     let nombreUsuarioActual = "";
 
-    // Detección para mostrar contraseña únicamente si el usuario es "admin"
+    // mostrar campo 
   document.getElementById('user').addEventListener('input', function(e) {
   const valor = e.target.value.trim().toLowerCase();
   const pwdContainer = document.getElementById('passwordContainer');
   const pwdInput = document.getElementById('password');
 
-  // Si contiene un correo (@) o empieza con 'admin'
   if (valor.includes('@') || valor.startsWith('admin')) {
     pwdContainer.classList.remove('hidden');
   } else {
@@ -322,14 +315,12 @@
       mostrarMarco('marco1');
     }
 
-    // 3. EVENTO DE ACCESO (MARCO 1)
     // EVENTO DE ACCESO (MARCO 1)
   document.getElementById('loginForm').addEventListener('submit', async function(e) {
   e.preventDefault();
   const userInput = document.getElementById('user').value.trim();
   const passwordInput = document.getElementById('password').value.trim();
 
-  // Intentar iniciar sesión en Supabase Auth con los datos introducidos por el usuario
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: userInput,
     password: passwordInput
@@ -344,12 +335,10 @@
     if (error) {
       alert("Error al iniciar sesión: " + error.message);
     } else {
-      // Al autenticar exitosamente, Supabase otorga los permisos 'authenticated'
       mostrarMarco('marco4');
       cargarTabla();
     }
   } else {
-    // Si no hay contraseña, entra como usuario normal a registrar datos
     nombreUsuarioActual = userInput;
     document.getElementById('saludoUsuario').innerText = "Usuario: " + nombreUsuarioActual.toUpperCase();
     document.getElementById('solicitante').value = nombreUsuarioActual;
@@ -357,7 +346,6 @@
   }
 });
 
-    // 4. GUARDAR REGISTRO (MARCO 3 -> SUPABASE)
     document.getElementById('reqForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
@@ -428,8 +416,7 @@
         }
       });
 
-
-    // 5. CARGAR REGISTROS EN TABLA (MARCO 4)
+    // CARGAR REGISTROS EN TABLA (MARCO 4)
     async function cargarTabla() {
       const tbody = document.getElementById('tablaBody');
       tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Cargando registros...</td></tr>';
@@ -472,6 +459,32 @@
         tbody.appendChild(tr);
       });
     }
+
+    //Funcion descargar
+    function descargarExcel() {
+    const tabla = document.querySelector("table");
+    if (!tabla) {
+      alert("No hay datos disponibles para exportar.");
+      return;
+    }
+    const tablaClon = tabla.cloneNode(true);
+    const filas = tablaClon.querySelectorAll("tr");
+    filas.forEach(fila => {
+      if (fila.children.length > 0) {
+        fila.removeChild(fila.lastElementChild);
+      }
+    });
+    const hoja = XLSX.utils.table_to_sheet(tablaClon);
+    const libro = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(libro, hoja, "Requerimientos");
+
+    const fecha = new Date().toISOString().split('T')[0];
+    const nombreArchivo = `Reporte_Requerimientos_${fecha}.xlsx`;
+
+    //Descargar el archivo Excel
+    XLSX.writeFile(libro, nombreArchivo);
+  }
+
   </script>
 </body>
 </html>
