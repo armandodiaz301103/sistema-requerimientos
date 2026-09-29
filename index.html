@@ -235,7 +235,7 @@
         </div>
         <div>
           <p>Nota:Utiliza una sola linea para cada requerimiento especifica cantiad o unidad de medida de ser el caso (M2, PZs)</p>
-          <textarea id="concepto" placeholder="Concepto / Descripción del requerimiento..." required>•</textarea>
+          <textarea id="concepto" placeholder="• Concepto / Descripción del requerimiento..." required></textarea>
         </div>
       </div>
       <div style="text-align: center; margin-top: 20px;">
@@ -401,20 +401,45 @@
       }
     }
 
-      const textarea = document.getElementById('concepto');
 
-      textarea.addEventListener('keydown', function(e) {
+  const textareaConcepto = document.getElementById("concepto");
+
+    if (textareaConcepto) {
+    textareaConcepto.addEventListener("focus", function () {
+      if (this.value.trim() === "") {
+        this.value = "• ";
+      }
+    });
+
+    textareaConcepto.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault(); 
         
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          const posicion = this.selectionStart;
-          const texto = this.value;
-          const nuevoTexto = texto.substring(0, posicion) + "\n• " + texto.substring(posicion);
-          
-          this.value = nuevoTexto;
-          this.selectionStart = this.selectionEnd = posicion + 2; // Posiciona el cursor después del símbolo
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        const val = this.value;
+
+        this.value = val.substring(0, start) + "\n• " + val.substring(end);
+        
+        this.selectionStart = this.selectionEnd = start + 4;
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        const start = this.selectionStart;
+        
+        if (start >= 2 && this.value.substring(start - 2, start) === "• ") {
+          e.preventDefault(); 
         }
-      });
+      }
+    });
+
+    textareaConcepto.addEventListener("blur", function () {
+      if (this.value.trim() === "•" || this.value.trim() === "") {
+        this.value = "";
+      }
+    });
+  }
 
     // CARGAR REGISTROS EN TABLA (MARCO 4)
     async function cargarTabla() {
@@ -527,5 +552,5 @@
       XLSX.writeFile(libro, `Reporte_Requerimientos_${fecha}.xlsx`);
     }
   </script>
-</body
+</body>
 </html>
