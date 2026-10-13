@@ -7,8 +7,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
   <style>
-  /* CONFIGURACIÓN GLOBAL */
-  body {
+    body {
     font-family: Arial, sans-serif;
     background-color: #f3f4f6;
     margin: 0;
@@ -25,19 +24,16 @@
     background-repeat: no-repeat;  
     background-attachment: fixed;  
   }
-
-  /* TARJETA CONTENEDORA FLUIDA */
-  .card {
-    background-color: #0c3e28dc;
-    color: white;
-    padding: 30px;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 800px; /* Se adapta en pantallas grandes y se encoge en móviles */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    box-sizing: border-box;
-  }
-
+    .card {
+      background-color: #0c3e28dc;
+      color: white;
+      padding: 60px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    
   .hidden { display: none !important; }
   
   /* MARCO 1: LOGIN */
@@ -94,6 +90,10 @@
     min-height: 180px;
     resize: vertical;
   }
+
+  .card-admin {
+  max-width: 95% !important; /* Se extiende a lo ancho de la pantalla */
+}
 
   /* BOTONES ADAPTATIVOS */
   button, 
@@ -173,7 +173,7 @@
   }
 
 
-</style>
+  </style>
 </head>
 <body>
 
@@ -184,7 +184,7 @@
       Ingresa tu nombre completo para enviar un requerimiento.
     </p>
     <form id="loginForm" class="login-container">
-      <input type="text" id="user" placeholder="Nombre Completo" required autocomplete="off">
+      <input type="text" id="user" placeholder="Nombre Completo" required style="width: 280px;" autocomplete="off">
       
       <div id="passwordContainer" class="hidden">
         <input type="password" id="password" placeholder="Contraseña de Admin" autocomplete="new-password">
@@ -226,7 +226,7 @@
           <textarea id="concepto" placeholder="• Concepto / Descripción del requerimiento..." required></textarea>
         </div>
       </div>
-      <div style="text-align: center; margin-top: 80px;">
+      <div style="text-align: center; margin-top: 20px;">
         <button type="submit">Enviar</button>
       </div>
     </form>
@@ -309,26 +309,24 @@
   const userInput = document.getElementById('user').value.trim();
   const passwordInput = document.getElementById('password').value.trim();
 
-  const passwordContainer = document.getElementById('passwordContainer');
-  const isAdminMode = passwordContainer && !passwordContainer.classList.contains('hidden');
-
-if (isAdminMode && passwordInput !== '') {
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: userInput,
     password: passwordInput
   });
 
-  if (error) {
+  if (passwordInput !== '') {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: userInput,
+      password: passwordInput
+    });
+
+    if (error) {
       alert("Error al iniciar sesión: " + error.message);
     } else {
       mostrarMarco('marco4');
       cargarTabla();
     }
   } else {
-    if(!userInput){
-      alert ("por favor ingresa tu nombre");
-      return;
-    }
     nombreUsuarioActual = userInput;
     document.getElementById('saludoUsuario').innerText = "Usuario: " + nombreUsuarioActual.toUpperCase();
     document.getElementById('solicitante').value = nombreUsuarioActual;
